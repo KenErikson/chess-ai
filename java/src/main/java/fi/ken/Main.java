@@ -1,11 +1,18 @@
 package fi.ken;
 
+import fi.ken.chess.Board;
+import fi.ken.chess.FenNotation;
+import fi.ken.chess.Team;
 import fi.ken.chess.piece.Piece;
+import fi.ken.chess.piece.PieceType;
+import fi.ken.chess.piece.Rook;
+
+import static fi.ken.chess.FenNotation.STARTING_FEN;
 
 public class Main {
 
     public static void main( String[] args ) {
-        //        Board board = new Board();
+        FenNotation.boardFromParsedFen( STARTING_FEN );
         //
         //        Piece[] state = board.getState();
         //
@@ -13,7 +20,7 @@ public class Main {
         //        for ( Piece piece : state ) {
         //            System.out.println( piece );
         //        }
-        System.out.println( Piece.pieceFor() );
+        System.out.println( Piece.pieceFor( PieceType.KING, Team.BLACK ) );
     }
 
 }

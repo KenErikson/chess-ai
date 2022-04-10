@@ -27,10 +27,15 @@ public class Board {
 
     private final int moveCount;
 
-    public Board( Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, int enPassantIndex, int captureLessHalfmoveCount, int moveCount ) {
+    Board( Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, int enPassantIndex, int captureLessHalfmoveCount, int moveCount ) {
+        // Validate valid board
+        checkArgument( state.length == BOARD_SIZE );
         checkNotNull( teamToMove );
         checkNotNull( availableCastling );
+        checkArgument(  availableCastling.size() <= 4 );
         checkArgument( enPassantIndex > -1 && enPassantIndex < BOARD_SIZE );
+        checkArgument( captureLessHalfmoveCount >= 0 );
+        checkArgument( moveCount >= 0 );
 
         this.state = state;
         this.teamToMove = teamToMove;
@@ -38,13 +43,10 @@ public class Board {
         this.enPassantIndex = enPassantIndex;
         this.captureLessHalfmoveCount = captureLessHalfmoveCount;
         this.moveCount = moveCount;
+    }
 
-        checkArgument( state.length == BOARD_SIZE );
-        checkArgument( moveCount >= 0 );
-        checkArgument( captureLessHalfmoveCount >= 0 );
-        checkArgument( enPassantIndex >= -1 && enPassantIndex < BOARD_SIZE );
-        checkArgument( availableCastling.size() >= 0 && availableCastling.size() <= 4 );
-        checkNotNull( teamToMove );
+    public static Board startingBoard(){
+        return FenNotation.boardFromParsedFen( FenNotation.STARTING_FEN );
     }
 
     public Piece[] getState() {

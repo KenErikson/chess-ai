@@ -18,6 +18,12 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-swing
+    implementation 'org.openjfx:javafx-swing:19-ea+4'
+
+    implementation 'com.formdev:flatlaf:2.1'
+    implementation 'com.formdev:flatlaf-intellij-themes:2.1'
 }
 
 test {

@@ -3,6 +3,7 @@ package fi.ken.chess.piece;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 
 import fi.ken.chess.Team;
@@ -47,5 +48,13 @@ public abstract class Piece {
                 .filter( p -> p.getTeam() == team )
                 .findAny()
                 .orElseThrow();
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("type", type)
+                .add("team", team)
+                .toString();
     }
 }
