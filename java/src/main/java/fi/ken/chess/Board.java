@@ -1,21 +1,21 @@
 package fi.ken.chess;
 
-import java.util.EnumSet;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Set;
 
 import fi.ken.chess.piece.Piece;
 
 /**
  * Board representation
- *
- * Fen notation https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
  */
 public class Board {
 
-    private static final int boardSideLength = 8;
-    private static final int boardSize = boardSideLength * boardSideLength;
+    public static final int BOARD_SIDE_LENGTH = 8;
+    public static final int BOARD_SIZE = BOARD_SIDE_LENGTH * BOARD_SIDE_LENGTH;
 
-    private final Piece[] state = new Piece[boardSize];
+    private final Piece[] state;
 
     private final Team teamToMove;
 
@@ -23,12 +23,28 @@ public class Board {
 
     private final int enPassantIndex;
 
-    public Board() {
-        initState( state );
+    private final int captureLessHalfmoveCount;
 
-        teamToMove = Team.WHITE;
-        availableCastling = EnumSet.allOf( CastlingType.class );
-        enPassantIndex = -1;
+    private final int moveCount;
+
+    public Board( Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, int enPassantIndex, int captureLessHalfmoveCount, int moveCount ) {
+        checkNotNull( teamToMove );
+        checkNotNull( availableCastling );
+        checkArgument( enPassantIndex > -1 && enPassantIndex < BOARD_SIZE );
+
+        this.state = state;
+        this.teamToMove = teamToMove;
+        this.availableCastling = availableCastling;
+        this.enPassantIndex = enPassantIndex;
+        this.captureLessHalfmoveCount = captureLessHalfmoveCount;
+        this.moveCount = moveCount;
+
+        checkArgument( state.length == BOARD_SIZE );
+        checkArgument( moveCount >= 0 );
+        checkArgument( captureLessHalfmoveCount >= 0 );
+        checkArgument( enPassantIndex >= -1 && enPassantIndex < BOARD_SIZE );
+        checkArgument( availableCastling.size() >= 0 && availableCastling.size() <= 4 );
+        checkNotNull( teamToMove );
     }
 
     public Piece[] getState() {
@@ -47,7 +63,11 @@ public class Board {
         return enPassantIndex;
     }
 
-    private static void initState( Piece[] state ) {
-        String tmp = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    public int getCaptureLessHalfmoveCount() {
+        return captureLessHalfmoveCount;
+    }
+
+    public int getMoveCount() {
+        return moveCount;
     }
 }
