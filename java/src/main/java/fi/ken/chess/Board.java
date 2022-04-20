@@ -32,8 +32,8 @@ public class Board {
         checkArgument( state.length == BOARD_SIZE );
         checkNotNull( teamToMove );
         checkNotNull( availableCastling );
-        checkArgument(  availableCastling.size() <= 4 );
-        checkArgument( enPassantIndex > -1 && enPassantIndex < BOARD_SIZE );
+        checkArgument( availableCastling.size() <= 4 );
+        checkArgument( enPassantIndex >= -1 && enPassantIndex < BOARD_SIZE, "EnpassantIndex: " + enPassantIndex );
         checkArgument( captureLessHalfmoveCount >= 0 );
         checkArgument( moveCount >= 0 );
 
@@ -45,7 +45,7 @@ public class Board {
         this.moveCount = moveCount;
     }
 
-    public static Board startingBoard(){
+    public static Board startingBoard() {
         return FenNotation.boardFromParsedFen( FenNotation.STARTING_FEN );
     }
 
