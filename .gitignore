@@ -1,3 +1,5 @@
 java/build/
 java/.idea/
 java/.gradle/
+.idea/
+.gradle/
