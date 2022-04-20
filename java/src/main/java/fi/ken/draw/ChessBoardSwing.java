@@ -5,13 +5,23 @@ import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
+
+import fi.ken.chess.Team;
+import fi.ken.chess.piece.Piece;
+import fi.ken.chess.piece.PieceType;
 
 public class ChessBoardSwing {
 
@@ -20,34 +30,28 @@ public class ChessBoardSwing {
      * this method should be invoked from the
      * event-dispatching thread.
      */
-    private static void createAndShowGUI() throws IOException {
+    private static void createAndShowGUI() throws IOException, URISyntaxException {
 
         // Make ui not look 1987
         FlatLightLaf.setup( new FlatArcOrangeIJTheme() );
 
         //Create and set up the window.
-        JFrame frame = new JFrame( "HelloWorldSwing" );
+        JFrame frame = new JFrame( "ChessBoard22" );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.addKeyListener( getEscExitKeyListener() );
         frame.setMinimumSize( new Dimension( 840, 860 ) );
         frame.setLocation( 400, 200 );
 
-        //        //Add the ubiquitous "Hello World" label.
-        //        JLabel label = new JLabel( "Hello World" );
-        //        frame.getContentPane().add( label );
-        //
-        //        JButton jButton = new JButton( "TMP" );
-        //        frame.getContentPane().add( jButton );
-
-        //        URL url = new URL( "http://i.stack.imgur.com/OVOg3.jpg" );
-        //        final BufferedImage bg = ImageIO.read( url );
-
         ChessboardPanel c = new ChessboardPanel();
-        c.setLayout( new GridLayout( 0, 5, 16, 16 ) );
-        c.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-        //        for ( int ii = 1; ii < 26; ii++ ) {
-        //            //            c.add( new JButton( "Button " + ii ) );
-        //        }
+                c.setLayout( new GridLayout( 0, 5, 16, 16 ) );
+        //        c.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+
+        File imageFile = PieceImageLoader.getImageFor( Piece.pieceFor( PieceType.ROOK, Team.WHITE ) );
+        BufferedImage myPicture = ImageIO.read( imageFile );
+        JLabel picLabel = new JLabel( new ImageIcon( myPicture ) );
+        picLabel.setLocation(  );
+        c.add( picLabel );
+
         frame.add( c );
 
         //Display the window.
@@ -77,7 +81,7 @@ public class ChessBoardSwing {
                 try {
                     createAndShowGUI();
                 }
-                catch ( IOException e ) {
+                catch ( IOException | URISyntaxException e ) {
                     e.printStackTrace();
                 }
             }
