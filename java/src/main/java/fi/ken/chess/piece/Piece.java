@@ -1,6 +1,7 @@
 package fi.ken.chess.piece;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.MoreObjects;
@@ -42,19 +43,24 @@ public abstract class Piece {
         return team;
     }
 
-    public static Piece pieceFor( PieceType pieceType, Team team ) {
+    public static Optional<Piece> pieceFor( PieceType pieceType, Team team ) {
         return PIECES_LOOKUP.stream()
                 .filter( p -> p.getType() == pieceType )
                 .filter( p -> p.getTeam() == team )
-                .findAny()
-                .orElseThrow();
+                .findAny();
+    }
+
+    public static Optional<Piece> pieceFor( char pieceNotation ) {
+        Team team = Character.isUpperCase( pieceNotation ) ? Team.WHITE : Team.BLACK;
+        PieceType pieceType = PieceType.forNotation( pieceNotation );
+        return pieceFor( pieceType, team );
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("type", type)
-                .add("team", team)
+        return MoreObjects.toStringHelper( this )
+                .add( "type", type )
+                .add( "team", team )
                 .toString();
     }
 }

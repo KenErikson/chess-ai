@@ -1,4 +1,4 @@
-package fi.ken.draw;
+package fi.ken.draw.image;
 
 import java.io.File;
 import java.net.URISyntaxException;

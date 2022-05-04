@@ -68,7 +68,7 @@ public class FenNotation {
                     index += Integer.parseInt( String.valueOf( pieceNotation ) );
                 }
                 else {
-                    state[index] = null;
+                    state[index] = Piece.pieceFor( pieceNotation ).orElse( null );
                     index++;
                 }
             }

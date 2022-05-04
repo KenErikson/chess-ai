@@ -1,4 +1,4 @@
-package fi.ken.draw;
+package fi.ken.draw.component;
 
 import java.awt.Color;
 import java.awt.Graphics;
