@@ -2,6 +2,8 @@ package fi.ken.draw.component;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.Serial;
 
 import javax.swing.JPanel;
@@ -40,7 +42,14 @@ public class ChessboardPanel extends JPanel {
                 g.fillRect( boardOffset.getxOffset() + x * squareSide, boardOffset.getyOffset() + y * squareSide, squareSide, squareSide );
             }
         }
+    }
 
+    public int getSquareSide() {
+        return squareSide;
+    }
+
+    public PanelOffset getBoardOffset() {
+        return boardOffset;
     }
 
     private boolean isWindowSizeChanged() {

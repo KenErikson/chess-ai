@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 
 public class ChessApp {
 
-    public static void main( String[] args ) throws URISyntaxException, IOException {
+    public static void main( String[] args ) throws URISyntaxException, IOException, InterruptedException {
         Board board = FenNotation.boardFromParsedFen( STARTING_FEN );
 
         ChessboardModel boardModel = new ChessboardModel( board );

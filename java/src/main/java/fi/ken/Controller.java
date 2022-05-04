@@ -17,11 +17,12 @@ public class Controller {
         initView();
     }
 
-    public void initController() {
+    public void initController() throws URISyntaxException, IOException, InterruptedException {
         // Add listeners
+        boardView.setBoard( boardModel.getBoard() );
     }
 
     public void initView() throws URISyntaxException, IOException {
-        boardView.setBoard( boardModel.getBoard() );
+        // anything?
     }
 }

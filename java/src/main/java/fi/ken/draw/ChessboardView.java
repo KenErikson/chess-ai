@@ -1,6 +1,10 @@
 package fi.ken.draw;
 
+import static java.awt.Image.SCALE_DEFAULT;
+
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -13,6 +17,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
@@ -22,6 +27,7 @@ import fi.ken.chess.Team;
 import fi.ken.chess.piece.Piece;
 import fi.ken.chess.piece.PieceType;
 import fi.ken.draw.component.ChessboardPanel;
+import fi.ken.draw.component.PanelOffset;
 import fi.ken.draw.image.PieceImageLoader;
 import fi.ken.draw.mouse.MouseHandler;
 
@@ -38,6 +44,14 @@ public class ChessboardView {
         frame = initFrame();
 
         chessPanel = new ChessboardPanel();
+        chessPanel.init();
+
+        GridLayout gridLayout = new GridLayout( Board.BOARD_SIDE_LENGTH, Board.BOARD_SIDE_LENGTH );
+        chessPanel.setLayout( gridLayout );
+
+        PanelOffset boardOffset = chessPanel.getBoardOffset();
+        int sideLength = chessPanel.getSquareSide() * Board.BOARD_SIDE_LENGTH;
+        //        chessPanel.setBounds( boardOffset.getxOffset(), boardOffset.getyOffset(), sideLength, sideLength );
 
         frame.add( chessPanel );
 
@@ -45,31 +59,33 @@ public class ChessboardView {
         finalizeFrame( frame );
     }
 
-    public void setBoard( Board board ) throws URISyntaxException, IOException {
+    public void setBoard( Board board ) throws URISyntaxException, IOException, InterruptedException {
+        while ( chessPanel.getSquareSide() <= 0 ) {
+            Thread.sleep( 10L );
+        }
         chessPanel.removeAll();
 
         Piece[] boardState = board.getState();
         for ( int i = 0; i < boardState.length; i++ ) {
             Piece piece = boardState[i];
             if ( piece != null ) {
-                JLabel picLabel = loadPictureLabel( piece );
+                JLabel picLabel = loadPictureLabel( piece, chessPanel.getSquareSide() );
+
+                //                picLabel.setSize( chessPanel.getSquareSide(), chessPanel.getSquareSide() );
 
                 chessPanel.add( picLabel );
-                picLabel.setLocation( 200, 200 );
             }
         }
 
-        //        Piece piece = Piece.pieceFor( PieceType.ROOK, Team.WHITE );
-        //        JLabel picLabel = loadPictureLabel( piece );
-
-        //        chessPanel.add( picLabel );
+        SwingUtilities.updateComponentTreeUI( chessPanel );
     }
 
-    private static JLabel loadPictureLabel( Piece piece ) throws URISyntaxException, IOException {
+    private static JLabel loadPictureLabel( Piece piece, int squareSide ) throws URISyntaxException, IOException {
         File imageFile = PieceImageLoader.getImageFor( piece );
-        BufferedImage myPicture = ImageIO.read( imageFile );
+        Image img = ImageIO.read( imageFile );
+        img = img.getScaledInstance( squareSide, squareSide, SCALE_DEFAULT );
 
-        JLabel picLabel = new JLabel( new ImageIcon( myPicture ) );
+        JLabel picLabel = new JLabel( new ImageIcon( img ) );
         MouseHandler.setMouseHandler( picLabel );
 
         return picLabel;
