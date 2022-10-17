@@ -3,8 +3,11 @@ package fi.ken;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import fi.ken.chess.Board;
 import fi.ken.chess.ChessboardModel;
 import fi.ken.draw.ChessboardView;
+
+import javax.annotation.Nullable;
 
 public class Controller {
 
@@ -18,11 +21,23 @@ public class Controller {
     }
 
     public void initController() throws URISyntaxException, IOException, InterruptedException {
-        // Add listeners
-        boardView.setBoard( boardModel.getBoard() );
+        updateView();
     }
 
-    public void initView() throws URISyntaxException, IOException {
+    public void initView() {
         // anything?
+    }
+
+    public void updateBoard(Board board) throws URISyntaxException, IOException, InterruptedException {
+        this.boardModel.setBoard( board );
+        updateView();
+    }
+
+    public void updateView() throws URISyntaxException, IOException, InterruptedException {
+        boardView.setBoard( boardModel.getBoard(), -1, this );
+    }
+
+    public void updateView( int indexSelected ) throws URISyntaxException, IOException, InterruptedException {
+        boardView.setBoard( boardModel.getBoard(), indexSelected, this );
     }
 }

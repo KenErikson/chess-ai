@@ -1,11 +1,8 @@
 package fi.ken.draw.component;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class PanelOffset implements Serializable {
-
-    @Serial
     private static final long serialVersionUID = 1L;
 
     private final int xOffset;

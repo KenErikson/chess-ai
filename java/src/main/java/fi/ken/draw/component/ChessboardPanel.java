@@ -4,14 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.io.Serial;
 
 import javax.swing.JPanel;
 
 import fi.ken.chess.Board;
 
 public class ChessboardPanel extends JPanel {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final Color LIGHT_BOARD_COLOR = Color.decode( "#FFCE9E" );

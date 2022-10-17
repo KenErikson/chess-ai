@@ -3,15 +3,14 @@ package fi.ken.draw;
 import static java.awt.Image.SCALE_DEFAULT;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -22,12 +21,13 @@ import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 
+import com.google.common.collect.ImmutableSet;
+import fi.ken.Controller;
 import fi.ken.chess.Board;
 import fi.ken.chess.Team;
 import fi.ken.chess.piece.Piece;
 import fi.ken.chess.piece.PieceType;
 import fi.ken.draw.component.ChessboardPanel;
-import fi.ken.draw.component.PanelOffset;
 import fi.ken.draw.image.PieceImageLoader;
 import fi.ken.draw.mouse.MouseHandler;
 
@@ -45,13 +45,7 @@ public class ChessboardView {
 
         chessPanel = new ChessboardPanel();
         chessPanel.init();
-
-        GridLayout gridLayout = new GridLayout( Board.BOARD_SIDE_LENGTH, Board.BOARD_SIDE_LENGTH );
-        chessPanel.setLayout( gridLayout );
-
-        PanelOffset boardOffset = chessPanel.getBoardOffset();
-        int sideLength = chessPanel.getSquareSide() * Board.BOARD_SIDE_LENGTH;
-        //        chessPanel.setBounds( boardOffset.getxOffset(), boardOffset.getyOffset(), sideLength, sideLength );
+        chessPanel.setLayout( null );
 
         frame.add( chessPanel );
 
@@ -59,34 +53,43 @@ public class ChessboardView {
         finalizeFrame( frame );
     }
 
-    public void setBoard( Board board ) throws URISyntaxException, IOException, InterruptedException {
+    public void setBoard(Board board, int indexSelected, Controller controller) throws URISyntaxException, IOException, InterruptedException {
         while ( chessPanel.getSquareSide() <= 0 ) {
             Thread.sleep( 10L );
         }
         chessPanel.removeAll();
 
         Piece[] boardState = board.getState();
+        Set<Integer> possibleMoves = board.getPossibleMoves(indexSelected);
         for ( int i = 0; i < boardState.length; i++ ) {
             Piece piece = boardState[i];
             if ( piece != null ) {
                 JLabel picLabel = loadPictureLabel( piece, chessPanel.getSquareSide() );
+                MouseHandler.setMouseHandler( picLabel, piece,i,controller );
 
-                //                picLabel.setSize( chessPanel.getSquareSide(), chessPanel.getSquareSide() );
+                picLabel.setLocation( (i % 8) * chessPanel.getSquareSide(), (i / 8) * chessPanel.getSquareSide() );
+                picLabel.setSize( picLabel.getPreferredSize());
+                    chessPanel.add( picLabel );
+            }
+            if( possibleMoves.contains( i)){
+                Piece pluppPiece = Piece.pieceFor(PieceType.ROOK, Team.BLACK).get();
+                JLabel plupp = loadPictureLabel( pluppPiece, 50 );
+                plupp.setLocation( (i % 8) * chessPanel.getSquareSide(), (i / 8) * chessPanel.getSquareSide() );
+                plupp.setSize( plupp.getPreferredSize());
 
-                chessPanel.add( picLabel );
+                chessPanel.add( plupp );
             }
         }
 
         SwingUtilities.updateComponentTreeUI( chessPanel );
     }
 
-    private static JLabel loadPictureLabel( Piece piece, int squareSide ) throws URISyntaxException, IOException {
+    private static JLabel loadPictureLabel(Piece piece, int squareSide) throws URISyntaxException, IOException {
         File imageFile = PieceImageLoader.getImageFor( piece );
         Image img = ImageIO.read( imageFile );
         img = img.getScaledInstance( squareSide, squareSide, SCALE_DEFAULT );
 
         JLabel picLabel = new JLabel( new ImageIcon( img ) );
-        MouseHandler.setMouseHandler( picLabel );
 
         return picLabel;
     }

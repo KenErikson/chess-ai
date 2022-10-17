@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import fi.ken.chess.piece.Piece;
 
 /**
@@ -71,5 +72,14 @@ public class Board {
 
     public int getMoveCount() {
         return moveCount;
+    }
+
+    public Set<Integer> getPossibleMoves( int selectedIndex ){
+        Piece selectedPiece = selectedIndex > -1 ? state[selectedIndex] : null;
+        if(selectedPiece == null){
+           return ImmutableSet.of();
+        }
+
+        return ImmutableSet.of(0,1,2,12);
     }
 }
