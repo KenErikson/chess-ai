@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import fi.ken.chess.Board;
 import fi.ken.chess.ChessboardModel;
+import fi.ken.chess.PiecePosition;
 import fi.ken.draw.ChessboardView;
 
 import javax.annotation.Nullable;
@@ -34,10 +35,10 @@ public class Controller {
     }
 
     public void updateView() throws URISyntaxException, IOException, InterruptedException {
-        boardView.setBoard( boardModel.getBoard(), -1, this );
+        boardView.setBoard( boardModel.getBoard(), null, this );
     }
 
-    public void updateView( int indexSelected ) throws URISyntaxException, IOException, InterruptedException {
-        boardView.setBoard( boardModel.getBoard(), indexSelected, this );
+    public void updateView(PiecePosition selectedPosition) throws URISyntaxException, IOException, InterruptedException {
+        boardView.setBoard( boardModel.getBoard(), selectedPosition, this );
     }
 }

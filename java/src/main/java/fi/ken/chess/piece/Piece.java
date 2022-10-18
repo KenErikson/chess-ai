@@ -7,6 +7,8 @@ import java.util.Set;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 
+import fi.ken.chess.Board;
+import fi.ken.chess.PiecePosition;
 import fi.ken.chess.Team;
 
 public abstract class Piece {
@@ -63,4 +65,6 @@ public abstract class Piece {
                 .add( "team", team )
                 .toString();
     }
+
+    public abstract Set<PiecePosition> getPossibleMoves(Board board, PiecePosition piecePosition);
 }

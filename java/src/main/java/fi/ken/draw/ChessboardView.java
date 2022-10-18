@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -24,6 +25,7 @@ import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import com.google.common.collect.ImmutableSet;
 import fi.ken.Controller;
 import fi.ken.chess.Board;
+import fi.ken.chess.PiecePosition;
 import fi.ken.chess.Team;
 import fi.ken.chess.piece.Piece;
 import fi.ken.chess.piece.PieceType;
@@ -53,38 +55,43 @@ public class ChessboardView {
         finalizeFrame( frame );
     }
 
-    public void setBoard(Board board, int indexSelected, Controller controller) throws URISyntaxException, IOException, InterruptedException {
+    public void setBoard(Board board, @Nullable PiecePosition selectedPosition, Controller controller) throws URISyntaxException, IOException, InterruptedException {
         while ( chessPanel.getSquareSide() <= 0 ) {
             Thread.sleep( 10L );
         }
         chessPanel.removeAll();
 
-        Piece[] boardState = board.getState();
-        Set<Integer> possibleMoves = board.getPossibleMoves(indexSelected);
-        for ( int i = 0; i < boardState.length; i++ ) {
-            Piece piece = boardState[i];
-            if ( piece != null ) {
-                JLabel picLabel = loadPictureLabel( piece, chessPanel.getSquareSide() );
-                MouseHandler.setMouseHandler( picLabel, piece,i,controller );
+        Set<PiecePosition> possibleMoves = board.getPossibleMoves(selectedPosition);
+        System.out.println(possibleMoves);
+        for ( int i = 0; i < Board.BOARD_SIZE; i++ ) {
+            PiecePosition piecePosition = PiecePosition.of( i );
+            Piece piece = board.getPiece( piecePosition );
 
-                picLabel.setLocation( (i % 8) * chessPanel.getSquareSide(), (i / 8) * chessPanel.getSquareSide() );
-                picLabel.setSize( picLabel.getPreferredSize());
-                    chessPanel.add( picLabel );
-            }
-            if( possibleMoves.contains( i)){
-                Piece pluppPiece = Piece.pieceFor(PieceType.ROOK, Team.BLACK).get();
-                JLabel plupp = loadPictureLabel( pluppPiece, 50 );
-                plupp.setLocation( (i % 8) * chessPanel.getSquareSide(), (i / 8) * chessPanel.getSquareSide() );
+
+            if( possibleMoves.contains( piecePosition )){
+                JLabel plupp = loadPictureLabel( null, 50 );
+                plupp.setLocation( (i % 8) * chessPanel.getSquareSide() + chessPanel.getSquareSide() / 2 - 25
+                        , (i / 8) * chessPanel.getSquareSide()+ chessPanel.getSquareSide() / 2 -25 );
                 plupp.setSize( plupp.getPreferredSize());
 
                 chessPanel.add( plupp );
+            }
+
+            if ( piece != null ) {
+                JLabel picLabel = loadPictureLabel( piece, chessPanel.getSquareSide() );
+                MouseHandler.setMouseHandler( picLabel, piece, piecePosition,controller );
+
+                picLabel.setLocation( (i % 8) * chessPanel.getSquareSide() + chessPanel.getBoardOffset().getxOffset()
+                        , (i / 8) * chessPanel.getSquareSide()+ chessPanel.getBoardOffset().getyOffset() );
+                picLabel.setSize( picLabel.getPreferredSize());
+                    chessPanel.add( picLabel );
             }
         }
 
         SwingUtilities.updateComponentTreeUI( chessPanel );
     }
 
-    private static JLabel loadPictureLabel(Piece piece, int squareSide) throws URISyntaxException, IOException {
+    private static JLabel loadPictureLabel(@Nullable Piece piece, int squareSide) throws URISyntaxException, IOException {
         File imageFile = PieceImageLoader.getImageFor( piece );
         Image img = ImageIO.read( imageFile );
         img = img.getScaledInstance( squareSide, squareSide, SCALE_DEFAULT );

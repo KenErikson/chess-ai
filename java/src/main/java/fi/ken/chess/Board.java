@@ -8,6 +8,8 @@ import java.util.Set;
 import com.google.common.collect.ImmutableSet;
 import fi.ken.chess.piece.Piece;
 
+import javax.annotation.Nullable;
+
 /**
  * Board representation
  */
@@ -22,26 +24,25 @@ public class Board {
 
     private final Set<CastlingType> availableCastling;
 
-    private final int enPassantIndex;
+    private final PiecePosition enPassantPosition;
 
     private final int captureLessHalfmoveCount;
 
     private final int moveCount;
 
-    Board( Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, int enPassantIndex, int captureLessHalfmoveCount, int moveCount ) {
+    Board(Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, @Nullable PiecePosition enPassantPosition, int captureLessHalfmoveCount, int moveCount ) {
         // Validate valid board
         checkArgument( state.length == BOARD_SIZE );
         checkNotNull( teamToMove );
         checkNotNull( availableCastling );
         checkArgument( availableCastling.size() <= 4 );
-        checkArgument( enPassantIndex >= -1 && enPassantIndex < BOARD_SIZE, "EnpassantIndex: " + enPassantIndex );
         checkArgument( captureLessHalfmoveCount >= 0 );
         checkArgument( moveCount >= 0 );
 
         this.state = state;
         this.teamToMove = teamToMove;
         this.availableCastling = availableCastling;
-        this.enPassantIndex = enPassantIndex;
+        this.enPassantPosition = enPassantPosition;
         this.captureLessHalfmoveCount = captureLessHalfmoveCount;
         this.moveCount = moveCount;
     }
@@ -62,8 +63,8 @@ public class Board {
         return availableCastling;
     }
 
-    public int getEnPassantIndex() {
-        return enPassantIndex;
+    public PiecePosition getEnPassantPosition() {
+        return enPassantPosition;
     }
 
     public int getCaptureLessHalfmoveCount() {
@@ -74,12 +75,20 @@ public class Board {
         return moveCount;
     }
 
-    public Set<Integer> getPossibleMoves( int selectedIndex ){
-        Piece selectedPiece = selectedIndex > -1 ? state[selectedIndex] : null;
+    public Set<PiecePosition> getPossibleMoves( @Nullable PiecePosition piecePosition ){
+        Piece selectedPiece = getPiece(piecePosition);
         if(selectedPiece == null){
            return ImmutableSet.of();
         }
 
-        return ImmutableSet.of(0,1,2,12);
+        return selectedPiece.getPossibleMoves(this, piecePosition );
+    }
+
+    @Nullable
+    public Piece getPiece(@Nullable PiecePosition selectedPosition) {
+        if(selectedPosition == null){
+            return null;
+        }
+        return state[selectedPosition.toIndex()];
     }
 }

@@ -2,6 +2,7 @@ package fi.ken.draw.mouse;
 
 import fi.ken.Controller;
 import fi.ken.chess.Board;
+import fi.ken.chess.PiecePosition;
 import fi.ken.chess.piece.Piece;
 
 import java.awt.Point;
@@ -16,11 +17,11 @@ public class MouseHandler extends MouseAdapter {
 
     private final Controller controller;
     private final Piece piece;
-    private final int index;
+    private final PiecePosition piecePosition;
 
-    public MouseHandler(Piece piece, int index, Controller controller) {
+    public MouseHandler(Piece piece, PiecePosition piecePosition, Controller controller) {
         this.piece = piece;
-        this.index = index;
+        this.piecePosition = piecePosition;
         this.controller = controller;
     }
 
@@ -30,9 +31,9 @@ public class MouseHandler extends MouseAdapter {
         //        moveToFront( label );
         // offset = e.getPoint();
 
-        System.out.println("Pressed " + piece.getType() + " on index " + index);
+        System.out.println("Pressed " + piece.getType() + " on index " + piecePosition);
         try {
-            controller.updateView( index );
+            controller.updateView( piecePosition );
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         } catch (IOException ex) {
@@ -54,8 +55,8 @@ public class MouseHandler extends MouseAdapter {
 //        component.setLocation( location );
     }
 
-    public static void setMouseHandler(JLabel jLabel, Piece piece, int index, Controller controller) {
-        MouseHandler mh = new MouseHandler( piece, index, controller);
+    public static void setMouseHandler(JLabel jLabel, Piece piece, PiecePosition piecePosition, Controller controller) {
+        MouseHandler mh = new MouseHandler( piece, piecePosition, controller);
 
         jLabel.addMouseListener( mh );
         jLabel.addMouseMotionListener( mh );

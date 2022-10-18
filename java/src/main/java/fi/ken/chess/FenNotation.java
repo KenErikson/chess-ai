@@ -47,7 +47,7 @@ public class FenNotation {
 
         Team teamToMove = Team.forNotation( teamToMoveStr.charAt( 0 ) );
         Set<CastlingType> availableCastling = parseCastling( castlingStr );
-        int enPassant = parseEnpassant( enPassantStr );
+        PiecePosition enPassant = PiecePosition.of(parseEnpassant( enPassantStr ));
 
         Piece[] state = parseBoard( boardStateStr );
 
