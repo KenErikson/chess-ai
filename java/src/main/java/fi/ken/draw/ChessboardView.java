@@ -86,6 +86,7 @@ public class ChessboardView {
                 picLabel.setSize( picLabel.getPreferredSize());
                     chessPanel.add( picLabel );
             }
+
         }
 
         SwingUtilities.updateComponentTreeUI( chessPanel );

@@ -14,7 +14,7 @@ public class King extends Piece {
     }
 
     @Override
-    public Set<PiecePosition> getPossibleMoves(Board board, PiecePosition piecePosition) {
+    public Set<PiecePosition> getAllPossibleMoves(Board board, PiecePosition piecePosition) {
         return ImmutableSet.of();
     }
 }

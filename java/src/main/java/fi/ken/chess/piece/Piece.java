@@ -66,5 +66,17 @@ public abstract class Piece {
                 .toString();
     }
 
-    public abstract Set<PiecePosition> getPossibleMoves(Board board, PiecePosition piecePosition);
+    public Set<PiecePosition> getPossibleMoves( Board board, PiecePosition piecePosition ) {
+
+        // for all possible moves - board.isBoardValidAfterMove( selectedPosition, movePosition );
+        // Set<PiecePosition> possibleAndValidMoves = new HashSet<>( possibleMoves );
+        // TODO check are moves possible?
+        return getAllPossibleMoves( board, piecePosition );
+    }
+
+    protected abstract Set<PiecePosition> getAllPossibleMoves( Board board, PiecePosition piecePosition );
+
+    protected boolean isEnemyTeam( Team team ) {
+        return getTeam() != team;
+    }
 }
