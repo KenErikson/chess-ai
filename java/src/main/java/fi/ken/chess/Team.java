@@ -17,6 +17,10 @@ public enum Team {
         return name;
     }
 
+    public Team otherTeam() {
+        return this == WHITE ? BLACK : WHITE;
+    }
+
     public static Team forPieceNotation( char notation ) {
         if ( Character.isUpperCase( notation ) ) {
             return WHITE;

@@ -8,8 +8,6 @@ import fi.ken.chess.ChessboardModel;
 import fi.ken.chess.PiecePosition;
 import fi.ken.draw.ChessboardView;
 
-import javax.annotation.Nullable;
-
 public class Controller {
 
     private ChessboardModel boardModel;
@@ -38,7 +36,15 @@ public class Controller {
         boardView.setBoard( boardModel.getBoard(), null, this );
     }
 
-    public void updateView(PiecePosition selectedPosition) throws URISyntaxException, IOException, InterruptedException {
+    public void updateView( PiecePosition selectedPosition ) throws URISyntaxException, IOException, InterruptedException {
         boardView.setBoard( boardModel.getBoard(), selectedPosition, this );
+    }
+
+    public void move( PiecePosition movingPiecePosition, PiecePosition moveToPosition ) throws URISyntaxException, IOException, InterruptedException {
+        Board board = boardModel.getBoard();
+
+        Board newBoard = board.move( movingPiecePosition, moveToPosition );
+
+        updateBoard( newBoard );
     }
 }

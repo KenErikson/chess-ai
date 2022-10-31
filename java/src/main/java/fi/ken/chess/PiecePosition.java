@@ -1,11 +1,11 @@
 package fi.ken.chess;
 
-import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import javax.annotation.Nullable;
 
 public class PiecePosition {
 
@@ -81,11 +81,17 @@ public class PiecePosition {
     }
 
     public PiecePosition withRow( int newRow ) {
-        return new PiecePosition( newRow, column );
+        if ( newRow != row ) {
+            return new PiecePosition( newRow, column );
+        }
+        return this;
     }
 
     public PiecePosition withColumn( int newColumn ) {
-        return new PiecePosition( row, newColumn );
+        if ( newColumn != row ) {
+            return new PiecePosition( row, newColumn );
+        }
+        return this;
     }
 
     public static PiecePosition of( int row, int column ) {
@@ -98,7 +104,7 @@ public class PiecePosition {
         checkArgument( steps != 0, "Steps must not be 0: " + steps );
         int stepsDirected = team == Team.BLACK ? steps : steps * -1;
         int newRow = row + stepsDirected;
-        checkArgument( newRow >= 0 && newRow < Board.BOARD_SIDE_LENGTH - 1, "New Row not on board: " + newRow );
+        checkArgument( newRow >= 0 && newRow < Board.BOARD_SIDE_LENGTH, "New Row not on board: " + newRow );
         return withRow( newRow );
     }
 
@@ -112,11 +118,41 @@ public class PiecePosition {
         checkArgument( steps != 0, "Steps must nor be 0: " + steps );
         int stepsDirected = team == Team.BLACK ? steps : steps * -1;
         int newColumn = column + stepsDirected;
-        checkArgument( newColumn >= 0 && newColumn < Board.BOARD_SIDE_LENGTH - 1, "New Column not on board: " + newColumn );
+        checkArgument( newColumn >= 0 && newColumn < Board.BOARD_SIDE_LENGTH, "New Column not on board: " + newColumn );
         return withColumn( newColumn );
     }
 
     public PiecePosition right( int steps, Team team ) {
         return left( steps * -1, team );
+    }
+
+    @Nullable
+    public PiecePosition step( Direction direction, int steps ) {
+        checkNotNull( direction, "direction must be set" );
+        checkArgument( steps > 0, "Steps must be > 0: " + steps );
+        int newRow = row;
+        int newColumn = column;
+        if ( direction == Direction.UP || direction == Direction.DOWN ) {
+            if ( direction == Direction.UP ) {
+                steps = steps * -1;
+            }
+            newRow = row + steps;
+        }
+        else if ( direction == Direction.LEFT || direction == Direction.RIGHT ) {
+            if ( direction == Direction.LEFT ) {
+                steps = steps * -1;
+            }
+            newColumn = column + steps;
+        }
+        else {
+            
+        }
+
+        try {
+            return withRow( newRow ).withColumn( newColumn );
+        }
+        catch ( IllegalArgumentException e ) {
+            return null;
+        }
     }
 }

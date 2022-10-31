@@ -45,7 +45,7 @@ public class Pawn extends Piece {
             if ( potentialTakePiece != null && potentialTakePiece.isEnemyTeam( getTeam() ) ) {
                 possibleMoves.add( forwardLeft );
             }
-            else if ( board.getEnPassantPosition().equals( forwardLeft ) ) {
+            else if ( forwardLeft.equals( board.getEnPassantPosition() ) ) {
                 possibleMoves.add( forwardLeft );
             }
 
@@ -56,7 +56,7 @@ public class Pawn extends Piece {
             if ( potentialTakePiece != null && potentialTakePiece.isEnemyTeam( getTeam() ) ) {
                 possibleMoves.add( forwardRight );
             }
-            else if ( board.getEnPassantPosition().equals( forwardRight ) ) {
+            else if ( forwardRight.equals( board.getEnPassantPosition() ) ) {
                 possibleMoves.add( forwardRight );
             }
         }

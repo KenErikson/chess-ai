@@ -22,13 +22,10 @@ import javax.swing.SwingUtilities;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 
-import com.google.common.collect.ImmutableSet;
 import fi.ken.Controller;
 import fi.ken.chess.Board;
 import fi.ken.chess.PiecePosition;
-import fi.ken.chess.Team;
 import fi.ken.chess.piece.Piece;
-import fi.ken.chess.piece.PieceType;
 import fi.ken.draw.component.ChessboardPanel;
 import fi.ken.draw.image.PieceImageLoader;
 import fi.ken.draw.mouse.MouseHandler;
@@ -55,36 +52,39 @@ public class ChessboardView {
         finalizeFrame( frame );
     }
 
-    public void setBoard(Board board, @Nullable PiecePosition selectedPosition, Controller controller) throws URISyntaxException, IOException, InterruptedException {
+    public void setBoard( Board board, @Nullable PiecePosition selectedPosition, Controller controller ) throws URISyntaxException, IOException, InterruptedException {
         while ( chessPanel.getSquareSide() <= 0 ) {
             Thread.sleep( 10L );
         }
         chessPanel.removeAll();
 
-        Set<PiecePosition> possibleMoves = board.getPossibleMoves(selectedPosition);
-        System.out.println(possibleMoves);
+        Set<PiecePosition> possibleMoves = board.getPossibleMoves( selectedPosition );
+        System.out.println( possibleMoves );
         for ( int i = 0; i < Board.BOARD_SIZE; i++ ) {
             PiecePosition piecePosition = PiecePosition.of( i );
             Piece piece = board.getPiece( piecePosition );
 
-
-            if( possibleMoves.contains( piecePosition )){
+            if ( possibleMoves.contains( piecePosition ) ) {
                 JLabel plupp = loadPictureLabel( null, 50 );
-                plupp.setLocation( (i % 8) * chessPanel.getSquareSide() + chessPanel.getSquareSide() / 2 - 25
-                        , (i / 8) * chessPanel.getSquareSide()+ chessPanel.getSquareSide() / 2 -25 );
-                plupp.setSize( plupp.getPreferredSize());
+                plupp.setLocation( ( i % 8 ) * chessPanel.getSquareSide() + chessPanel.getSquareSide() / 2 - 25
+                        , ( i / 8 ) * chessPanel.getSquareSide() + chessPanel.getSquareSide() / 2 - 25 );
+                plupp.setSize( plupp.getPreferredSize() );
+
+                if ( piece == null ) {
+                    MouseHandler.setMouseHandler( plupp, null, piecePosition, controller, board, possibleMoves, selectedPosition );
+                }
 
                 chessPanel.add( plupp );
             }
 
             if ( piece != null ) {
                 JLabel picLabel = loadPictureLabel( piece, chessPanel.getSquareSide() );
-                MouseHandler.setMouseHandler( picLabel, piece, piecePosition,controller );
+                MouseHandler.setMouseHandler( picLabel, piece, piecePosition, controller, board, possibleMoves, selectedPosition );
 
-                picLabel.setLocation( (i % 8) * chessPanel.getSquareSide() + chessPanel.getBoardOffset().getxOffset()
-                        , (i / 8) * chessPanel.getSquareSide()+ chessPanel.getBoardOffset().getyOffset() );
-                picLabel.setSize( picLabel.getPreferredSize());
-                    chessPanel.add( picLabel );
+                picLabel.setLocation( ( i % 8 ) * chessPanel.getSquareSide() + chessPanel.getBoardOffset().getxOffset()
+                        , ( i / 8 ) * chessPanel.getSquareSide() + chessPanel.getBoardOffset().getyOffset() );
+                picLabel.setSize( picLabel.getPreferredSize() );
+                chessPanel.add( picLabel );
             }
 
         }
@@ -92,7 +92,7 @@ public class ChessboardView {
         SwingUtilities.updateComponentTreeUI( chessPanel );
     }
 
-    private static JLabel loadPictureLabel(@Nullable Piece piece, int squareSide) throws URISyntaxException, IOException {
+    private static JLabel loadPictureLabel( @Nullable Piece piece, int squareSide ) throws URISyntaxException, IOException {
         File imageFile = PieceImageLoader.getImageFor( piece );
         Image img = ImageIO.read( imageFile );
         img = img.getScaledInstance( squareSide, squareSide, SCALE_DEFAULT );

@@ -5,10 +5,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-import fi.ken.chess.piece.Piece;
-
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableSet;
+
+import fi.ken.chess.piece.Piece;
 
 /**
  * Board representation
@@ -30,7 +31,7 @@ public class Board {
 
     private final int moveCount;
 
-    Board(Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, @Nullable PiecePosition enPassantPosition, int captureLessHalfmoveCount, int moveCount ) {
+    Board( Piece[] state, Team teamToMove, Set<CastlingType> availableCastling, @Nullable PiecePosition enPassantPosition, int captureLessHalfmoveCount, int moveCount ) {
         // Validate valid board
         checkArgument( state.length == BOARD_SIZE );
         checkNotNull( teamToMove );
@@ -75,20 +76,43 @@ public class Board {
         return moveCount;
     }
 
-    public Set<PiecePosition> getPossibleMoves( @Nullable PiecePosition piecePosition ){
-        Piece selectedPiece = getPiece(piecePosition);
-        if(selectedPiece == null){
-           return ImmutableSet.of();
+    public Set<PiecePosition> getPossibleMoves( @Nullable PiecePosition piecePosition ) {
+        Piece selectedPiece = getPiece( piecePosition );
+        if ( selectedPiece == null ) {
+            return ImmutableSet.of();
         }
 
-        return selectedPiece.getPossibleMoves(this, piecePosition );
+        return selectedPiece.getPossibleMoves( this, piecePosition );
     }
 
     @Nullable
-    public Piece getPiece(@Nullable PiecePosition selectedPosition) {
-        if(selectedPosition == null){
+    public Piece getPiece( @Nullable PiecePosition selectedPosition ) {
+        if ( selectedPosition == null ) {
             return null;
         }
         return state[selectedPosition.toIndex()];
+    }
+
+    public Board move( PiecePosition movingPiecePosition, PiecePosition moveToPosition ) {
+        System.out.println( "From" );
+        System.out.println( movingPiecePosition );
+        System.out.println( "To" );
+        System.out.println( moveToPosition );
+
+        Piece movingPiece = getPiece( movingPiecePosition );
+        checkArgument( movingPiece != null, "Moving piece must not be null" );
+        state[movingPiecePosition.toIndex()] = null;
+
+        Piece moveToPiece = getPiece( moveToPosition );
+        state[moveToPosition.toIndex()] = movingPiece;
+
+        return new Board(
+                state,
+                teamToMove.otherTeam(),
+                availableCastling, // TODO check
+                null,
+                moveToPiece != null ? 0 : captureLessHalfmoveCount + 1,
+                moveCount + 1
+        );
     }
 }
