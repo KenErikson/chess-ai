@@ -1,11 +1,14 @@
 package fi.ken.chess.piece;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
+
 import fi.ken.chess.Board;
+import fi.ken.chess.Direction;
 import fi.ken.chess.PiecePosition;
 import fi.ken.chess.Team;
-
-import java.util.Set;
 
 public class Knight extends Piece {
 
@@ -14,7 +17,29 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Set<PiecePosition> getAllPossibleMoves(Board board, PiecePosition piecePosition) {
-        return ImmutableSet.of();
+    public Set<PiecePosition> getAllPossibleMoves( Board board, PiecePosition piecePosition ) {
+        Set<PiecePosition> possibleMoves = new HashSet<>();
+
+        for ( Direction direction : Direction.ORTHOGONAL_DIRECTIONS ) {
+            int steps = 2;
+            PiecePosition potentialPosition = piecePosition.step( direction, steps );
+            if ( potentialPosition == null ) {
+                continue;
+            }
+
+            Set<Direction> testDirections = switch ( direction ) {
+                case UP, DOWN -> ImmutableSet.of( Direction.LEFT, Direction.RIGHT );
+                case LEFT, RIGHT -> ImmutableSet.of( Direction.UP, Direction.DOWN );
+                default -> {
+                    throw new IllegalArgumentException( "only orthigonal expected, not: " + direction );
+                }
+            };
+            for ( Direction testDirection : testDirections ) {
+                PiecePosition testPotentialPosition = potentialPosition.step( testDirection, 1 );
+                addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, testPotentialPosition );
+            }
+        }
+
+        return ImmutableSet.copyOf( possibleMoves );
     }
 }

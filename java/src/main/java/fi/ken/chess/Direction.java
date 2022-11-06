@@ -15,8 +15,8 @@ public enum Direction {
     DOWN_RIGHT( "down-right" ),
     ;
 
-    public static final Set<Direction> DIAGONAL_DIRECTIONS = ImmutableSet.of();
-    public static final Set<Direction> ORTHOGONAL_DIRECTIONS = ImmutableSet.of();
+    public static final Set<Direction> DIAGONAL_DIRECTIONS = ImmutableSet.of( UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT );
+    public static final Set<Direction> ORTHOGONAL_DIRECTIONS = ImmutableSet.of( UP, DOWN, LEFT, RIGHT );
 
     private final String key;
 

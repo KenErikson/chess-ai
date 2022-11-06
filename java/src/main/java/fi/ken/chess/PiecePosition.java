@@ -28,7 +28,7 @@ public class PiecePosition {
     }
 
     public int toIndex() {
-        return row * Board.BOARD_SIDE_LENGTH + column;
+        return ( row * ( Board.BOARD_SIDE_LENGTH ) ) + column;
     }
 
     public boolean atLeftEdge( Team team ) {
@@ -88,7 +88,7 @@ public class PiecePosition {
     }
 
     public PiecePosition withColumn( int newColumn ) {
-        if ( newColumn != row ) {
+        if ( newColumn != column ) {
             return new PiecePosition( row, newColumn );
         }
         return this;
@@ -130,6 +130,7 @@ public class PiecePosition {
     public PiecePosition step( Direction direction, int steps ) {
         checkNotNull( direction, "direction must be set" );
         checkArgument( steps > 0, "Steps must be > 0: " + steps );
+        System.out.println( "STEP: " + direction + " - " + steps );
         int newRow = row;
         int newColumn = column;
         if ( direction == Direction.UP || direction == Direction.DOWN ) {
@@ -145,7 +146,18 @@ public class PiecePosition {
             newColumn = column + steps;
         }
         else {
-            
+            if ( direction.getKey().contains( "right" ) ) {
+                newColumn = column + steps;
+            }
+            else {
+                newColumn = column - steps;
+            }
+            if ( direction.getKey().contains( "down" ) ) {
+                newRow = row + steps;
+            }
+            else {
+                newRow = row - steps;
+            }
         }
 
         try {

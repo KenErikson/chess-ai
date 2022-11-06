@@ -17,7 +17,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Set<PiecePosition> getAllPossibleMoves(Board board, PiecePosition piecePosition) {
+    public Set<PiecePosition> getAllPossibleMoves( Board board, PiecePosition piecePosition ) {
         Set<PiecePosition> possibleMoves = new HashSet<>();
 
         for ( Direction value : Direction.DIAGONAL_DIRECTIONS ) {
@@ -26,16 +26,7 @@ public class Bishop extends Piece {
                 if ( potentialPosition == null ) {
                     break;
                 }
-                Piece potentialPositionPiece = board.getPiece( potentialPosition );
-                if ( potentialPositionPiece == null ) {
-                    possibleMoves.add( potentialPosition );
-                }
-                else {
-                    if ( isEnemyTeam( potentialPositionPiece.getTeam() ) ) {
-                        possibleMoves.add( potentialPosition );
-                    }
-                    break;
-                }
+                addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, potentialPosition );
             }
         }
 

@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 
@@ -78,5 +80,20 @@ public abstract class Piece {
 
     protected boolean isEnemyTeam( Team team ) {
         return getTeam() != team;
+    }
+
+    protected void addPossibleMoveIfEmptyOrEnemy( Board board, Set<PiecePosition> possibleMoves, @Nullable PiecePosition potentialPosition ) {
+        if ( potentialPosition == null ) {
+            return;
+        }
+        Piece potentialPositionPiece = board.getPiece( potentialPosition );
+        if ( potentialPositionPiece == null ) {
+            possibleMoves.add( potentialPosition );
+        }
+        else {
+            if ( isEnemyTeam( potentialPositionPiece.getTeam() ) ) {
+                possibleMoves.add( potentialPosition );
+            }
+        }
     }
 }
