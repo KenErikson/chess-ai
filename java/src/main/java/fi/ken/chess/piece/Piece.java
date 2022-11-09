@@ -69,31 +69,51 @@ public abstract class Piece {
     }
 
     public Set<PiecePosition> getPossibleMoves( Board board, PiecePosition piecePosition ) {
+        Set<PiecePosition> allPossibleMoves = getAllPossibleMoves( board, piecePosition );
 
-        // for all possible moves - board.isBoardValidAfterMove( selectedPosition, movePosition );
-        // Set<PiecePosition> possibleAndValidMoves = new HashSet<>( possibleMoves );
-        // TODO check are moves possible?
-        return getAllPossibleMoves( board, piecePosition );
+        return filterValidMovesForTeam( allPossibleMoves, board, piecePosition, getTeam() );
     }
 
-    protected abstract Set<PiecePosition> getAllPossibleMoves( Board board, PiecePosition piecePosition );
+    public abstract Set<PiecePosition> getAllPossibleMoves( Board board, PiecePosition piecePosition );
 
     protected boolean isEnemyTeam( Team team ) {
         return getTeam() != team;
     }
 
-    protected void addPossibleMoveIfEmptyOrEnemy( Board board, Set<PiecePosition> possibleMoves, @Nullable PiecePosition potentialPosition ) {
+    /**
+     * @return true if is enemy, otherwise false
+     */
+    protected PossiblePositionResult addPossibleMoveIfEmptyOrEnemy( Board board, Set<PiecePosition> possibleMoves, @Nullable PiecePosition potentialPosition ) {
         if ( potentialPosition == null ) {
-            return;
+            return PossiblePositionResult.OUT_OF_BOUNDS;
         }
         Piece potentialPositionPiece = board.getPiece( potentialPosition );
         if ( potentialPositionPiece == null ) {
             possibleMoves.add( potentialPosition );
+            return PossiblePositionResult.EMPTY;
+        }
+        else if ( isEnemyTeam( potentialPositionPiece.getTeam() ) ) {
+            possibleMoves.add( potentialPosition );
+            return PossiblePositionResult.ENEMY;
         }
         else {
-            if ( isEnemyTeam( potentialPositionPiece.getTeam() ) ) {
-                possibleMoves.add( potentialPosition );
+            return PossiblePositionResult.FRIENDLY;
+        }
+    }
+
+    private static Set<PiecePosition> filterValidMovesForTeam( Set<PiecePosition> allPossibleMoves, Board board, PiecePosition piecePosition, Team team ) {
+        Set<PiecePosition> validMoves = new HashSet<>();
+        for ( PiecePosition possibleMove : allPossibleMoves ) {
+            boolean isValidMove = isValidMove( possibleMove, board, piecePosition, team );
+            if ( isValidMove ) {
+                validMoves.add( possibleMove );
             }
         }
+        return ImmutableSet.copyOf( validMoves );
+    }
+
+    private static boolean isValidMove( PiecePosition possibleMove, Board board, PiecePosition piecePosition, Team team ) {
+        Board newBoard = board.move( piecePosition, possibleMove );
+        return newBoard.isValidForTeam( team );
     }
 }

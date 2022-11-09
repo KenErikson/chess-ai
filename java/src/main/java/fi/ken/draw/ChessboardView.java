@@ -2,22 +2,19 @@ package fi.ken.draw;
 
 import static java.awt.Image.SCALE_DEFAULT;
 
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
@@ -57,6 +54,8 @@ public class ChessboardView {
             Thread.sleep( 10L );
         }
         chessPanel.removeAll();
+
+        frame.setTitle( "ChessBoard22 - " + board.getTeamToMove().getName().toUpperCase( Locale.ROOT ) );
 
         Set<PiecePosition> possibleMoves = board.getPossibleMoves( selectedPosition );
         System.out.println( possibleMoves );

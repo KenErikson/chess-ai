@@ -27,7 +27,7 @@ public class Controller {
         // anything?
     }
 
-    public void updateBoard(Board board) throws URISyntaxException, IOException, InterruptedException {
+    public void updateBoard( Board board ) throws URISyntaxException, IOException, InterruptedException {
         this.boardModel.setBoard( board );
         updateView();
     }
@@ -44,6 +44,10 @@ public class Controller {
         Board board = boardModel.getBoard();
 
         Board newBoard = board.move( movingPiecePosition, moveToPosition );
+
+        if ( !newBoard.isValidForTeam( newBoard.getTeamToMove() ) ) {
+            System.out.println( "CHECKMATE SON, team " + newBoard.getTeamToMove().otherTeam().getName() + " wins" );
+        }
 
         updateBoard( newBoard );
     }

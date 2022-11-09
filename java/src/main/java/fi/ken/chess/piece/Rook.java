@@ -23,10 +23,11 @@ public class Rook extends Piece {
         for ( Direction direction : Direction.ORTHOGONAL_DIRECTIONS ) {
             for ( int steps = 1; steps < Board.BOARD_SIDE_LENGTH; steps++ ) {
                 PiecePosition potentialPosition = piecePosition.step( direction, steps );
-                if ( potentialPosition == null ) {
+
+                PossiblePositionResult possiblePositionResult = addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, potentialPosition );
+                if ( possiblePositionResult != PossiblePositionResult.EMPTY ) {
                     break;
                 }
-                addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, potentialPosition );
             }
         }
 

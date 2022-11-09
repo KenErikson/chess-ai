@@ -3,13 +3,21 @@ package fi.ken.chess;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import fi.ken.chess.piece.Piece;
+import fi.ken.chess.piece.PieceType;
 
 /**
  * Board representation
@@ -94,25 +102,71 @@ public class Board {
     }
 
     public Board move( PiecePosition movingPiecePosition, PiecePosition moveToPosition ) {
-        System.out.println( "From" );
-        System.out.println( movingPiecePosition );
-        System.out.println( "To" );
-        System.out.println( moveToPosition );
+        //        System.out.println( "From" );
+        //        System.out.println( movingPiecePosition );
+        //        System.out.println( "To" );
+        //        System.out.println( moveToPosition );
+        Piece[] newState = Arrays.copyOf( state, state.length );
 
         Piece movingPiece = getPiece( movingPiecePosition );
         checkArgument( movingPiece != null, "Moving piece must not be null" );
-        state[movingPiecePosition.toIndex()] = null;
+        newState[movingPiecePosition.toIndex()] = null;
 
         Piece moveToPiece = getPiece( moveToPosition );
-        state[moveToPosition.toIndex()] = movingPiece;
+        newState[moveToPosition.toIndex()] = movingPiece;
 
         return new Board(
-                state,
+                newState,
                 teamToMove.otherTeam(),
-                availableCastling, // TODO check
+                availableCastling,
                 null,
                 moveToPiece != null ? 0 : captureLessHalfmoveCount + 1,
                 moveCount + 1
         );
+    }
+
+    public boolean isValidForTeam( Team team ) {
+        List<Pair<Piece, PiecePosition>> allEnemyTeamPieces = getPieces( team.otherTeam() );
+
+        PiecePosition kingPosition = getKing( team );
+
+        for ( Pair<Piece, PiecePosition> enemyPiecePair : allEnemyTeamPieces ) {
+            Piece enemyPiece = enemyPiecePair.getKey();
+            PiecePosition piecePosition = enemyPiecePair.getValue();
+            Set<PiecePosition> allPossibleMovesForPiece = enemyPiece.getAllPossibleMoves( this, piecePosition );
+            if ( allPossibleMovesForPiece.contains( kingPosition ) ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private PiecePosition getKing( Team team ) {
+        return getAllPieces().stream()
+                .filter( p -> p.getKey().getType() == PieceType.KING )
+                .filter( p -> p.getKey().getTeam() == team )
+                .findFirst()
+                .orElseThrow()
+                .getValue();
+    }
+
+    private List<Pair<Piece, PiecePosition>> getPieces( Team team ) {
+        return getAllPieces().stream()
+                .filter( p -> p.getKey().getTeam() == team )
+                .collect( Collectors.toList() );
+    }
+
+    private List<Pair<Piece, PiecePosition>> getAllPieces() {
+        List<Pair<Piece, PiecePosition>> allPieces = new ArrayList<>();
+
+        for ( int i = 0; i < BOARD_SIZE; i++ ) {
+            Piece potentialPiece = state[i];
+            if ( potentialPiece != null ) {
+                allPieces.add( Pair.of( potentialPiece, PiecePosition.of( i ) ) );
+            }
+        }
+
+        return ImmutableList.copyOf( allPieces );
     }
 }

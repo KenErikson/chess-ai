@@ -99,7 +99,6 @@ public class PiecePosition {
     }
 
     public PiecePosition forward( int steps, Team team ) {
-        System.out.println( "Pawn to " + steps + " for team " + team + " possible" );
         checkNotNull( team, "Team must be set" );
         checkArgument( steps != 0, "Steps must not be 0: " + steps );
         int stepsDirected = team == Team.BLACK ? steps : steps * -1;
@@ -113,7 +112,6 @@ public class PiecePosition {
     }
 
     public PiecePosition left( int steps, Team team ) {
-        System.out.println( "Pawn Left to " + steps + " for team " + team + " possible" );
         checkNotNull( team, "Team must be set" );
         checkArgument( steps != 0, "Steps must nor be 0: " + steps );
         int stepsDirected = team == Team.BLACK ? steps : steps * -1;
@@ -130,7 +128,6 @@ public class PiecePosition {
     public PiecePosition step( Direction direction, int steps ) {
         checkNotNull( direction, "direction must be set" );
         checkArgument( steps > 0, "Steps must be > 0: " + steps );
-        System.out.println( "STEP: " + direction + " - " + steps );
         int newRow = row;
         int newColumn = column;
         if ( direction == Direction.UP || direction == Direction.DOWN ) {

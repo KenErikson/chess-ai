@@ -23,10 +23,10 @@ public class Bishop extends Piece {
         for ( Direction value : Direction.DIAGONAL_DIRECTIONS ) {
             for ( int steps = 1; steps < Board.BOARD_SIDE_LENGTH; steps++ ) {
                 PiecePosition potentialPosition = piecePosition.step( value, steps );
-                if ( potentialPosition == null ) {
+                PossiblePositionResult possiblePositionResult = addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, potentialPosition );
+                if ( possiblePositionResult != PossiblePositionResult.EMPTY ) {
                     break;
                 }
-                addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, potentialPosition );
             }
         }
 
