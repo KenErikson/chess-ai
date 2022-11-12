@@ -125,7 +125,7 @@ public class Board {
         );
     }
 
-    public boolean isValidForTeam( Team team ) {
+    public boolean isTeamInCheck( Team team ) {
         List<Pair<Piece, PiecePosition>> allEnemyTeamPieces = getPieces( team.otherTeam() );
 
         PiecePosition kingPosition = getKing( team );
@@ -135,11 +135,11 @@ public class Board {
             PiecePosition piecePosition = enemyPiecePair.getValue();
             Set<PiecePosition> allPossibleMovesForPiece = enemyPiece.getAllPossibleMoves( this, piecePosition );
             if ( allPossibleMovesForPiece.contains( kingPosition ) ) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     private PiecePosition getKing( Team team ) {
@@ -168,5 +168,19 @@ public class Board {
         }
 
         return ImmutableList.copyOf( allPieces );
+    }
+
+    public boolean teamHasValidMoves( Team team ) {
+        List<Pair<Piece, PiecePosition>> allTeamPieces = getPieces( team );
+
+        for ( Pair<Piece, PiecePosition> enemyPiecePair : allTeamPieces ) {
+            Piece enemyPiece = enemyPiecePair.getKey();
+            PiecePosition piecePosition = enemyPiecePair.getValue();
+            Set<PiecePosition> possibleMovesForPiece = enemyPiece.getPossibleMoves( this, piecePosition );
+            if ( !possibleMovesForPiece.isEmpty() ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

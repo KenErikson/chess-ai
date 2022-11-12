@@ -45,8 +45,13 @@ public class Controller {
 
         Board newBoard = board.move( movingPiecePosition, moveToPosition );
 
-        if ( !newBoard.isValidForTeam( newBoard.getTeamToMove() ) ) {
-            System.out.println( "CHECKMATE SON, team " + newBoard.getTeamToMove().otherTeam().getName() + " wins" );
+        boolean isCheck = newBoard.isTeamInCheck( newBoard.getTeamToMove() );
+        boolean isCheckMate = isCheck && !newBoard.teamHasValidMoves( newBoard.getTeamToMove() );
+        if ( isCheckMate ) {
+            System.out.println( "CHECKMATE" );
+        }
+        else if ( isCheck ) {
+            System.out.println( "CHECK" );
         }
 
         updateBoard( newBoard );

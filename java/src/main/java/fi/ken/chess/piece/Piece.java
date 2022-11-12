@@ -114,6 +114,6 @@ public abstract class Piece {
 
     private static boolean isValidMove( PiecePosition possibleMove, Board board, PiecePosition piecePosition, Team team ) {
         Board newBoard = board.move( piecePosition, possibleMove );
-        return newBoard.isValidForTeam( team );
+        return !newBoard.isTeamInCheck( team );
     }
 }

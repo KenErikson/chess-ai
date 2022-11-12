@@ -27,13 +27,19 @@ public class Knight extends Piece {
                 continue;
             }
 
-            Set<Direction> testDirections = switch ( direction ) {
-                case UP, DOWN -> ImmutableSet.of( Direction.LEFT, Direction.RIGHT );
-                case LEFT, RIGHT -> ImmutableSet.of( Direction.UP, Direction.DOWN );
-                default -> {
+            Set<Direction> testDirections;
+            switch ( direction ) {
+                case UP:
+                case DOWN:
+                    testDirections = ImmutableSet.of( Direction.LEFT, Direction.RIGHT );
+                    break;
+                case LEFT:
+                case RIGHT:
+                    testDirections = ImmutableSet.of( Direction.UP, Direction.DOWN );
+                    break;
+                default:
                     throw new IllegalArgumentException( "only orthigonal expected, not: " + direction );
-                }
-            };
+            }
             for ( Direction testDirection : testDirections ) {
                 PiecePosition testPotentialPosition = potentialPosition.step( testDirection, 1 );
                 addPossibleMoveIfEmptyOrEnemy( board, possibleMoves, testPotentialPosition );

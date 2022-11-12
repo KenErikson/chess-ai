@@ -45,15 +45,25 @@ public enum Direction {
     }
 
     private Direction inverse() {
-        return switch ( this ) {
-            case UP -> DOWN;
-            case DOWN -> UP;
-            case LEFT -> RIGHT;
-            case RIGHT -> LEFT;
-            case UP_LEFT -> DOWN_RIGHT;
-            case UP_RIGHT -> DOWN_LEFT;
-            case DOWN_LEFT -> UP_RIGHT;
-            case DOWN_RIGHT -> UP_LEFT;
-        };
+        switch ( this ) {
+            case UP:
+                return DOWN;
+            case DOWN:
+                return UP;
+            case LEFT:
+                return RIGHT;
+            case RIGHT:
+                return LEFT;
+            case UP_LEFT:
+                return DOWN_RIGHT;
+            case UP_RIGHT:
+                return DOWN_LEFT;
+            case DOWN_LEFT:
+                return UP_RIGHT;
+            case DOWN_RIGHT:
+                return UP_LEFT;
+            default:
+                throw new IllegalStateException( "Unknown direction" );
+        }
     }
 }

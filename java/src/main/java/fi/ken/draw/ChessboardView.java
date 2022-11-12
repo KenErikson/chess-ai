@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
@@ -23,6 +24,7 @@ import fi.ken.Controller;
 import fi.ken.chess.Board;
 import fi.ken.chess.PiecePosition;
 import fi.ken.chess.piece.Piece;
+import fi.ken.chess.piece.PieceType;
 import fi.ken.draw.component.ChessboardPanel;
 import fi.ken.draw.image.PieceImageLoader;
 import fi.ken.draw.mouse.MouseHandler;
@@ -57,6 +59,8 @@ public class ChessboardView {
 
         frame.setTitle( "ChessBoard22 - " + board.getTeamToMove().getName().toUpperCase( Locale.ROOT ) );
 
+        boolean teamInCheck = board.isTeamInCheck( board.getTeamToMove() );
+
         Set<PiecePosition> possibleMoves = board.getPossibleMoves( selectedPosition );
         System.out.println( possibleMoves );
         for ( int i = 0; i < Board.BOARD_SIZE; i++ ) {
@@ -78,6 +82,9 @@ public class ChessboardView {
 
             if ( piece != null ) {
                 JLabel picLabel = loadPictureLabel( piece, chessPanel.getSquareSide() );
+                if ( teamInCheck && piece.getType() == PieceType.KING && piece.getTeam() == board.getTeamToMove() ) {
+                    picLabel.setBorder( new LineBorder( Color.RED, 2 ) );
+                }
                 MouseHandler.setMouseHandler( picLabel, piece, piecePosition, controller, board, possibleMoves, selectedPosition );
 
                 picLabel.setLocation( ( i % 8 ) * chessPanel.getSquareSide() + chessPanel.getBoardOffset().getxOffset()
